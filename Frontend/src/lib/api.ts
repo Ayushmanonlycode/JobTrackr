@@ -1,6 +1,6 @@
 // API utility functions to communicate with the backend
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://job-trackr-six.vercel.app/api';
 
 // Fetch all jobs for a user
 export const fetchUserJobs = async (userId: string) => {
