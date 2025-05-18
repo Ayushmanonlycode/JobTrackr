@@ -189,7 +189,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📬 Contact
 
-If you have any questions or feedback, please reach out at [your-email@example.com](mailto:ayushman.onlycode69@gmail.com).
+If you have any questions or feedback, please reach out at [MAIL](mailto:ayushman.onlycode69@gmail.com).
 
 ---
 
