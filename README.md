@@ -2,7 +2,7 @@
 
 A modern, interactive dashboard for tracking job applications throughout your career search journey. Built with React, TypeScript, Express, MongoDB, and a suite of modern frontend technologies.
 
-![hehe](https://www.flickr.com/photos/202831360@N03/54528074410/in/dateposted-public/)
+![](https://www.flickr.com/photos/202831360@N03/54528074410/in/dateposted-public/)
 
 ## 🌟 Features
 
@@ -189,7 +189,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📬 Contact
 
-If you have any questions or feedback, please reach out at [your-email@example.com](mailto:your-email@example.com).
+If you have any questions or feedback, please reach out at [your-email@example.com](mailto:ayushman.onlycode69@gmail.com).
 
 ---
 
