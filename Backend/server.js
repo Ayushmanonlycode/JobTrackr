@@ -8,11 +8,21 @@ const jobRoutes = require('./routes/jobRoutes');
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
-
 // Create Express app
 const app = express();
+
+// Connect to MongoDB - only once per instance
+let cachedDB = null;
+const connectToDatabase = async () => {
+  if (cachedDB) {
+    return cachedDB;
+  }
+  cachedDB = await connectDB();
+  return cachedDB;
+};
+
+// Immediately invoke to start DB connection
+connectToDatabase().catch(err => console.error("Database connection error:", err));
 
 // Middleware
 app.use(helmet());
@@ -28,6 +38,11 @@ app.use('/api/jobs', jobRoutes);
 // Root route
 app.get('/', (req, res) => {
   res.send('Dashboard API is running');
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
 
 // For local development
