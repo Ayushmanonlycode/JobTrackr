@@ -84,13 +84,30 @@ export default function Dashboard() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
+        console.log('No authenticated user found, redirecting to auth');
         navigate('/auth');
       } else {
+        console.log('User authenticated:', user.uid);
         setUserName(user.displayName || 'there');
         try {
+          // Make sure we have a valid user ID
+          if (!user.uid) {
+            throw new Error('User ID is missing');
+          }
+          
+          console.log('Fetching jobs for user ID:', user.uid);
           // Fetch jobs for the authenticated user
           const jobsData = await fetchUserJobs(user.uid);
-          setJobs(jobsData);
+          console.log('Jobs data received:', jobsData);
+          
+          // Check if jobsData is an array
+          if (!Array.isArray(jobsData)) {
+            console.error('Expected array of jobs but got:', jobsData);
+            setError('Invalid data format received. Please contact support.');
+            setJobs([]);
+          } else {
+            setJobs(jobsData);
+          }
         } catch (err) {
           console.error('Error fetching jobs:', err);
           setError('Failed to load jobs. Please try again later.');

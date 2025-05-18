@@ -8,15 +8,26 @@ exports.getJobs = async (req, res) => {
   try {
     const { userId } = req.query;
     
+    console.log('GET /api/jobs - Request received with userId:', userId);
+    
     if (!userId) {
+      console.log('GET /api/jobs - Missing userId in request');
       return res.status(400).json({ message: 'User ID is required' });
     }
     
+    // Try to find jobs with the given userId
+    console.log('GET /api/jobs - Querying database for jobs with userId:', userId);
     const jobs = await Job.find({ userId }).sort({ createdAt: -1 });
-    res.json(jobs);
+    console.log('GET /api/jobs - Found jobs count:', jobs.length);
+    
+    // Return empty array if no jobs found (not an error)
+    return res.json(jobs);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('GET /api/jobs - Server error:', err.message);
+    if (err.name === 'CastError') {
+      return res.status(400).json({ message: 'Invalid User ID format' });
+    }
+    return res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
 
