@@ -4,7 +4,7 @@ import { auth } from '../lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiFilter, FiX, FiChevronDown, FiChevronUp, FiEdit, FiTrash2, FiAlertTriangle, FiBriefcase, FiTrendingUp, FiPieChart, FiBarChart2, FiCalendar, FiClock, FiCheck, FiCheckCircle } from 'react-icons/fi';
-import { fetchUserJobs, deleteJob, updateJob } from '../lib/api';
+import { fetchUserJobs, deleteJob, updateJob, testApiConnection } from '../lib/api';
 import { PieChart, Pie, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend, Sector } from 'recharts';
 
 interface Job {
@@ -70,6 +70,9 @@ export default function Dashboard() {
   const [chartAnimationProgress, setChartAnimationProgress] = useState(0);
   const [chartsVisible, setChartsVisible] = useState(false);
 
+  const [isTestingApi, setIsTestingApi] = useState(false);
+  const [testApiResult, setTestApiResult] = useState<any>(null);
+
   const welcomeMessages = [
     "Track your job applications",
     "Organize your job search",
@@ -91,6 +94,19 @@ export default function Dashboard() {
         } catch (err) {
           console.error('Error fetching jobs:', err);
           setError('Failed to load jobs. Please try again later.');
+          
+          // Try the test endpoint to diagnose API connection issues
+          setIsTestingApi(true);
+          try {
+            const testResult = await testApiConnection();
+            setTestApiResult(testResult);
+            console.log('API test result:', testResult);
+          } catch (testErr) {
+            console.error('API test failed:', testErr);
+            setTestApiResult({ error: 'API connection test failed' });
+          } finally {
+            setIsTestingApi(false);
+          }
         } finally {
           setLoading(false);
         }
@@ -377,6 +393,40 @@ export default function Dashboard() {
   console.log('Status Counts:', statusCounts);
   console.log('Status Data for Chart:', statusData);
 
+  const renderErrorWithDiagnostics = () => {
+    if (!error) return null;
+    
+    return (
+      <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-md">
+        <div className="flex items-center">
+          <FiAlertTriangle className="text-red-500 mr-2" />
+          <span className="text-red-700">{error}</span>
+        </div>
+        
+        {isTestingApi && (
+          <div className="mt-2 text-sm">
+            Testing API connectivity...
+          </div>
+        )}
+        
+        {testApiResult && (
+          <div className="mt-2 text-sm">
+            <div>API Test Result: {testApiResult.success ? 'Connected' : 'Failed'}</div>
+            {testApiResult.message && <div>Message: {testApiResult.message}</div>}
+            <div className="mt-1">
+              <button 
+                onClick={() => window.location.reload()}
+                className="text-blue-500 underline hover:text-blue-700"
+              >
+                Reload page
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -572,12 +622,7 @@ export default function Dashboard() {
                 </motion.button>
               </div>
 
-              {/* Error message */}
-              {error && (
-                <div className="bg-red-50 border border-red-100 text-red-700 rounded-xl p-3 mb-4">
-                  {error}
-                </div>
-              )}
+              {renderErrorWithDiagnostics()}
 
               {/* Loading state */}
               {loading ? (

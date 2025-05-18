@@ -5,17 +5,41 @@ const API_URL = import.meta.env.PROD
   ? (import.meta.env.VITE_API_URL || 'https://job-trackr-backend.vercel.app/api')
   : 'http://localhost:5000/api';
 
+console.log('API URL being used:', API_URL);
+
+// Test connectivity to API
+export const testApiConnection = async () => {
+  try {
+    console.log('Testing API connection to:', `${API_URL}/test`);
+    const response = await fetch(`${API_URL}/test`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('API Connection Test Error:', error);
+    throw error;
+  }
+};
 
 // Fetch all jobs for a user
 export const fetchUserJobs = async (userId: string) => {
   try {
+    console.log('Fetching jobs for user:', userId, 'from URL:', `${API_URL}/jobs?userId=${userId}`);
     const response = await fetch(`${API_URL}/jobs?userId=${userId}`);
     
     if (!response.ok) {
-      throw new Error('Failed to fetch jobs');
+      console.error('Failed to fetch jobs. Status:', response.status);
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
+      throw new Error(`Failed to fetch jobs. Status: ${response.status}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log('Jobs data received:', data);
+    return data;
   } catch (error) {
     console.error('Error fetching jobs:', error);
     throw error;

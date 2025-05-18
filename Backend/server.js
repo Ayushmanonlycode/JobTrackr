@@ -25,11 +25,15 @@ const connectToDatabase = async () => {
 connectToDatabase().catch(err => console.error("Database connection error:", err));
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(express.json());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
-  credentials: true
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204
 }));
 
 // Routes
@@ -38,6 +42,27 @@ app.use('/api/jobs', jobRoutes);
 // Root route
 app.get('/', (req, res) => {
   res.send('Dashboard API is running');
+});
+
+// API info route
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'JobTrackr API is running',
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Test endpoint that always returns data
+app.get('/api/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'API is working correctly',
+    testJobs: [
+      { id: '1', company: 'Test Company', position: 'Test Position', status: 'pending' },
+      { id: '2', company: 'Example Inc', position: 'Developer', status: 'interview' }
+    ]
+  });
 });
 
 // Health check endpoint
