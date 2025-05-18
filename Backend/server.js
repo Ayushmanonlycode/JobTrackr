@@ -17,7 +17,10 @@ const app = express();
 // Middleware
 app.use(helmet());
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  credentials: true
+}));
 
 // Routes
 app.use('/api/jobs', jobRoutes);
@@ -27,8 +30,13 @@ app.get('/', (req, res) => {
   res.send('Dashboard API is running');
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-}); 
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+// Export for serverless
+module.exports = app; 
