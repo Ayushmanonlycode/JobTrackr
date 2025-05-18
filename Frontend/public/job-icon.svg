@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <g fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Briefcase - simplified -->
+    <rect x="10" y="16" width="28" height="24" rx="2" />
+    <!-- Briefcase handle - simplified -->
+    <path d="M18 16V10a2 2 0 012-2h8a2 2 0 012 2v6" />
+    <!-- Magnifying glass - simplified -->
+    <circle cx="30" cy="28" r="5" />
+    <line x1="33.5" y1="31.5" x2="38" y2="36" />
+  </g>
+</svg> 
